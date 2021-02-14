@@ -4,9 +4,9 @@ const galleryHeader = document.querySelector('.gallery-header');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
+const search=document.getElementById('search');
 // selected image 
 let sliders = [];
-
 
 // If this key doesn't work
 // Find the name in the url and go to their website
@@ -37,16 +37,29 @@ const getImages = (query) => {
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
-  let element = event.target;
-  element.classList.add('added');
- 
+  let element = event.target; 
   let item = sliders.indexOf(img);
   if (item === -1) {
+    element.classList.add('added');
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    const slider=sliders.filter(element=>element!=img);
+    sliders=[];
+    sliders=slider;
+    element.classList.toggle('added');
   }
 }
+
+function keyboardEnterPressed(){
+  search.addEventListener("keypress", function(event) {
+    if(event.keyCode == 13)
+    {
+      searchBtn.click();
+    }
+  });
+}
+keyboardEnterPressed();
+
 var timer
 const createSlider = () => {
   // check slider image length
@@ -67,7 +80,8 @@ const createSlider = () => {
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
-  const duration = document.getElementById('duration').value || 1000;
+  const duration = parseInt(document.getElementById('duration').value) || 1000;
+if(duration>0){
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
@@ -82,7 +96,14 @@ const createSlider = () => {
     changeSlide(slideIndex);
   }, duration);
 }
-
+else
+{
+  showNegativeTimeError();
+}
+}
+const showNegativeTimeError=()=>{
+  sliderContainer.innerHTML='Slider change duration can not be a negative number.';
+}
 // change slider index 
 const changeItem = index => {
   changeSlide(slideIndex += index);
